@@ -14,11 +14,12 @@ type LoadingState
     | Loaded
     | Error
 
-type Msg
-    = NoOp
+type ImageMsg
+    = SetState LoadingState
+    | NoOp
 
-lazyImage : ImageState -> Html Msg
+lazyImage : ImageState -> Html ImageMsg
 lazyImage model =
     div [ class "ImageContainer" ]
-        [ img [ src "http://placehold.it/300x300" ] []
+        [ img [ src "http://placehold.it/300x300", onClick (SetState Loaded) ] []
         ]
