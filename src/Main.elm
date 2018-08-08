@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, text, div, h1, img)
+import Html exposing (Html, text, div, h1, h3, img)
 import Html.Attributes exposing (src, class)
 import Html.Events exposing (..)
 
@@ -56,18 +56,25 @@ update msg model =
 
 ---- VIEW ----
 
-lazyImage : String -> Html Msg
-lazyImage imageSrc =
-    div [ class "ImageContainer" ]
-        [ img [ src imageSrc, onClick (SetImageState Loaded) ] []
-        ]
+lazyImage : ImageState -> Html Msg
+lazyImage imageState =
+    let
+        displayContent: Html Msg
+        displayContent =
+            case imageState.imageStatus of
+                Loaded -> img [ src imageState.imageSrc ] []
+                Loading -> h3 [] [ text "Loading image..." ]
+                Error -> h3 [] [ text  "Something went wrong..."]
+    in
+        div [ class "ImageContainer", onClick (SetImageState Loaded) ]
+            [ displayContent ]
 
 view : Model -> Html Msg
 view model =
     div []
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working!" ]
-        , lazyImage model.images.imageSrc
+        , lazyImage model.images
         ]
 
 
