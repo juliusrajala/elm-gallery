@@ -1,8 +1,9 @@
 module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, h3, img)
-import Html.Attributes exposing (src, class)
+import Html.Attributes exposing (attribute, src, class)
 import Html.Events exposing (..)
+import Json.Decode
 
 ---- MODEL ----
 
@@ -17,15 +18,21 @@ type LoadingState
     | Error
 
 type alias Model =
-    { images: ImageState
+    { images: List ImageState
     }
 
 initialState: Model
 initialState =
     { images =
-        { imageSrc = "http://placehold.it/300x300"
-        , imageStatus = Loading
-        }
+        [
+            { imageSrc = "http://placehold.it/300x300"
+            , imageStatus = Loading 
+            }
+        ,
+            { imageSrc = "http://placehold.it/302x302"
+            , imageStatus = Loading
+            }
+        ]
     }
 
 init : ( Model, Cmd Msg )
@@ -62,8 +69,8 @@ lazyImage imageState =
         displayContent: Html Msg
         displayContent =
             case imageState.imageStatus of
-                Loaded -> img [ src imageState.imageSrc ] []
-                Loading -> h3 [] [ text "Loading image..." ]
+                Loaded -> img [ class "LazyImage LazyImage--Ready", src imageState.imageSrc ] []
+                Loading -> img [ class "LazyImage", src imageState.imageSrc, on "load" (Json.Decode.succeed (SetImageState Loaded)) ] [ text "Loading image..." ]
                 Error -> h3 [] [ text  "Something went wrong..."]
     in
         div [ class "ImageContainer", onClick (SetImageState Loaded) ]
@@ -72,9 +79,10 @@ lazyImage imageState =
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
+        [ h3 [] [ text "This is the gallery..." ]
+        , h1 [] [ text "Below this, you'll find the image." ]
         , lazyImage model.images
+        , h3 [] [ text "The image will appear above." ]
         ]
 
 

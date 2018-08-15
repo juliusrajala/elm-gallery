@@ -9,7 +9,18 @@ h1 {
   font-size: 30px;
 }
 
-img {
-  margin: 20px 0;
-  max-width: 200px;
+.LazyImage {
+  background-color: black;
+  width: 300px;
+  height: 300px;
+  opacity: 0;
+}
+
+.LazyImage--Ready {
+  opacity: 1;
+  transition: .2s ease-in-out opacity;
+}
+
+* {
+  box-sizing: border-box;
 }
